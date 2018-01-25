@@ -72,7 +72,9 @@ Eg:C:\Users\sandya\AppData\Local\Programs\Python\Python36.
                   6.@app.route('/subscribe')---->http://127.0.0.1:5000/subscribe(It will create the subscription  for each customer with only one plan)
                   7.@app.route('/multiple_subscription')---->http://127.0.0.1:5000/multiple_subscription(It will create the multiple subscription  for each customer with different plan per subscription)
                   8.@app.route('/multiple_plans')---->http://127.0.0.1:5000/multiple_plan(It will create the one subscription  for each customer with multiple plan)
-
+        
+        
+                    * NOTE:I added templates folder which contains HTML files,I used to check whether incoming customers are able to subscribe or not.It works perfectly for all kinds of subscription.   
 
 
 
