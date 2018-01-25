@@ -14,7 +14,25 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
-@app.route('/')
+@app.route('/main')
+def home():
+		return render_template('form.html')
+
+@app.route('/msub')
+def msub():
+		return render_template('multiple_subscribe.html')
+
+@app.route('/mul',methods=['POST'])
+def mul():
+	cust=request.form['customer_id']
+	plan= request.form.getlist('plan_id')
+	print(plan)
+	bill=request.form['bill']
+	return 'read'
+	#return render_template('mul_subscribe.html')
+
+
+@app.route('/list_customer')
 def list_customer():
 	lcus=stripe.Customer.list(limit=4)
 	return jsonify(lcus)
@@ -35,9 +53,6 @@ def customer_id():
 		total.append(d)
 		result=total
 	return jsonify(result)
-
-
-	
 
 '''@app.route('/subid')
 def subscription_id():
@@ -86,78 +101,170 @@ def subscribe():
 	cust=request.form['customer_id']
 	plan= request.form['plan_id']
 	bill=request.form['bill']
-	if plan=="silver-complete":
-		sub=stripe.Subscription.create(
-	  		customer=cust,
-	  		billing=bill,
-	  		days_until_due=10,
-	  		items=[
-				{
-				  "plan": "silver-complete",
-				  #"plan": "Yearly complete",
-				  #"plan": "online-access",
-				  #"plan": "home-delivery",
-				  #"plan": "additional-license",
+	try:
+		if plan=="silver-complete":
+			if bill=="send_invoice":
+				sub=stripe.Subscription.create(
+			  		customer=cust,
+			  		billing=bill,
+			  		days_until_due=10,
+			  		items=[
+						{
+						  "plan": "silver-complete",
+						  #"plan": "Yearly complete",
+						  #"plan": "online-access",
+						  #"plan": "home-delivery",
+						  #"plan": "additional-license",
 
-				},
-	  		 ]
-			
-			)
-	else:
-		return render_template('error.html')
+						},
+			  		 ]
+					
+					)
+				return '<h1><center>Plan is subscribed </center></h1>'
+
+			elif bill=="charge_automatically":
+				sub=stripe.Subscription.create(
+			  		customer=cust,
+			  		billing=bill,
+			  		#days_until_due=none,
+			  		items=[
+						{
+						  "plan": "silver-complete",
+						  #"plan": "Yearly complete",
+						  #"plan": "online-access",
+						  #"plan": "home-delivery",
+						  #"plan": "additional-license",
+
+						},
+			  		 ]
+					
+					)
+				return '<h1><center>Plan is subscribed </center></h1>'
+			else:
+				return bill+'<h1><center>Billing type is not available</center></h1>'
+		else:
+			return render_template('error.html')
+
+	except requests.exceptions.RequestException as e:
+   		raise ThreatStackRequestError(e.args)
 
 #each customer can subscribe to multiple subscription
 @app.route('/multiple_subscription',methods=['POST'])
 def multiple_subscribe():
 	cust=request.form['customer_id']
 	plan= request.form.getlist('plan_id')
+	print(plan)
 	bill=request.form['bill']
 	i=0
 	for x in plan:
 		if plan[i]=='online-access':
-			sub1 = stripe.Subscription.create(
-			customer=cust,
-			billing=bill,
-		  	days_until_due=10,
-			items=[{'plan': 'online-access'}],
-			)
-			i=i+1
+			if bill=="send_invoice":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	days_until_due=10,
+			  	tax_percent=6.34,
+				items=[{'plan': 'online-access'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
+			elif bill=="charge_automatically":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	#days_until_due=10,
+				items=[{'plan': 'online-access'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
 
 		elif plan[i]=='home-delivery':
-			sub2 = stripe.Subscription.create(
-			  customer=cust,
-			  billing=bill,
-		  	  days_until_due=10,
-			  items=[{'plan': 'home-delivery'}],
-			)
-			i=i+1
+			if bill=="send_invoice":
+				sub2 = stripe.Subscription.create(
+				  customer=cust,
+				  billing=bill,
+			  	  days_until_due=10,
+				  items=[{'plan': 'home-delivery'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
+			elif bill=="charge_automatically":
+				sub2 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+				#days_until_due=10,
+				items=[{'plan': 'home-delivery'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
 
 		elif plan[i]=='silver-complete':
-			sub3 = stripe.Subscription.create(
-			  customer=cust,
-			  billing=bill,
-		  	  days_until_due=10,
-			  items=[{'plan': 'silver-complete'}],
-			)
-			i=i+1
+			if bill=="send_invoice":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	days_until_due=10,
+				items=[{'plan': 'silver-complete'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
+			elif bill=="charge_automatically":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	#days_until_due=10,
+				items=[{'plan': 'silver-complete'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
 
 		elif plan[i]=='Yearly complete':
-			sub4 = stripe.Subscription.create(
-			  customer=cust,
-			  billing=bill,
-		  	  days_until_due=10,
-			  items=[{'plan': 'Yearly complete'}],
-			)
-			i=i+1
+			if bill=="send_invoice":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	days_until_due=10,
+				items=[{'plan': 'Yearly complete'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
+			elif bill=="charge_automatically":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	#days_until_due=10,
+				items=[{'plan': 'Yearly complete'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
 
 		elif plan[i]=='additional-license':
-			sub5 = stripe.Subscription.create(
-			  customer=cust,
-			  billing=bill,
-		  	  days_until_due=10,
-			  items=[{'plan': 'additional-license'}],
-			)
-			i=i+1
+			if bill=="send_invoice":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	days_until_due=10,
+				items=[{'plan': 'additional-license'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
+			elif bill=="charge_automatically":
+				sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	#days_until_due=10,
+				items=[{'plan': 'additional-license'}],
+				)
+				i=i+1
+				return '<h1><center>Plan is subscribed </center></h1>'
+
 
 		else:
 			return render_template('error.html')
@@ -169,24 +276,39 @@ def multiple_subscribe():
 @app.route('/multiple_plans',methods=['POST'])
 def mulplans():
 	cust=request.form['customer_id']
-	plan= request.form.getlist('plan_id')
+	#plan= request.form.getlist('plan_id')
 	bill=request.form['bill']
 
-	subscription = stripe.Subscription.create(
-  		customer=cust,
-	  	billing=bill,
-  	  	days_until_due=10,
-		  items=[
-		    {
-		      'plan': 'home-delivery',
-		    },
-		    {
-		      'plan': 'additional-license',
-		      'quantity': 2,
-		    },
-		  ],
-		  #print(items)
-		)
+	if bill=="send_invoice":
+		sub1 = stripe.Subscription.create(
+				customer=cust,
+				billing=bill,
+			  	days_until_due=10,
+				items=[
+				{'plan': 'additional-license'},
+				{'plan': 'silver-complete',
+				  'quantity':2,
+				},
+				],
+				)
+		return '<h1><center>Plan is subscribed </center></h1>'
+				
+	else:
+		subscription = stripe.Subscription.create(
+			  customer=cust,
+			  items=[
+			    {
+			      'plan': 'silver-complete',
+			    },
+			    {
+			      'plan': 'additional-license',
+			      'quantity': 2,
+			    },
+			  ],
+			)
+		return '<h1><center>Plan is subscribed </center></h1>'
+
+
 
 
 
