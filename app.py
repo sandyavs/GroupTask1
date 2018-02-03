@@ -4,8 +4,8 @@ import stripe,json,requests
 from flask_json import FlaskJSON, JsonError, json_response
 app = Flask(__name__)
 
-print(os.environ.get('PUB_API_KEY'))
-print(os.environ.get('SEC_API_KEY'))
+'''print(os.environ.get('PUB_API_KEY'))
+print(os.environ.get('SEC_API_KEY'))'''
 
 stripe_keys = {
   'secret_key': os.environ['SEC_API_KEY'],
@@ -14,22 +14,14 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
-@app.route('/main')
+'''@app.route('/')
 def home():
 		return render_template('form.html')
 
 @app.route('/msub')
 def msub():
-		return render_template('multiple_subscribe.html')
+		return render_template('multiple_subscribe.html')'''
 
-@app.route('/mul',methods=['POST'])
-def mul():
-	cust=request.form['customer_id']
-	plan= request.form.getlist('plan_id')
-	print(plan)
-	bill=request.form['bill']
-	return 'read'
-	#return render_template('mul_subscribe.html')
 
 
 @app.route('/list_customer')
@@ -53,19 +45,33 @@ def customer_id():
 		total.append(d)
 		result=total
 	return jsonify(result)
-
-'''@app.route('/subid')
+'''
+@app.route('/subid',methods=['POST'])
 def subscription_id():
 	list1=stripe.Customer.list(limit=100)
 	sub=[]
-	#code for accessing subscription id:
+	cust=request.form['customer_id']
+	total=[]
+	j=0
 	for i in list1:
-		s={}
-		s["subscriptions"]=i["subscriptions"]
-		sub.append(s)
-		sub_result=sub
-	return jsonify(sub_result)
-'''
+		if i['id']==cust:
+			print(i['id'])
+	return 'null'
+
+
+	for i in list1:
+		d={}
+		d['id']=i['id']
+		total.append(d)
+		result=total
+		#print(result[j])
+		#j=j+1
+	return jsonify(result)'''
+
+	
+
+
+
 
 
 '''@app.route('/subscribe')
@@ -95,7 +101,7 @@ def sudscribe():
 
 	return jsonify(sub)
 '''
-#each customer can subscribe to either of many plans
+#each customer can subscribe to either of many plans@app.route('/subscribe',methods=['POST'])
 @app.route('/subscribe',methods=['POST'])
 def subscribe():
 	cust=request.form['customer_id']
@@ -120,7 +126,7 @@ def subscribe():
 			  		 ]
 					
 					)
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub)
 
 			elif bill=="charge_automatically":
 				sub=stripe.Subscription.create(
@@ -139,14 +145,17 @@ def subscribe():
 			  		 ]
 					
 					)
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub)
 			else:
-				return bill+'<h1><center>Billing type is not available</center></h1>'
+				a='<h1><center>Billing Type is not applicable</center></h1>'
 		else:
-			return render_template('error.html')
+			a='<h1><center>Invalid Plan</center></h1>'
+		return a
+
 
 	except requests.exceptions.RequestException as e:
    		raise ThreatStackRequestError(e.args)
+
 
 #each customer can subscribe to multiple subscription
 @app.route('/multiple_subscription',methods=['POST'])
@@ -167,17 +176,19 @@ def multiple_subscribe():
 				items=[{'plan': 'online-access'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
 
 			elif bill=="charge_automatically":
 				sub1 = stripe.Subscription.create(
 				customer=cust,
 				billing=bill,
-			  	#days_until_due=10,
 				items=[{'plan': 'online-access'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
+			else:
+				a='<h1><center>Billing Type is not applicable</center></h1>'
+
 
 		elif plan[i]=='home-delivery':
 			if bill=="send_invoice":
@@ -188,17 +199,20 @@ def multiple_subscribe():
 				  items=[{'plan': 'home-delivery'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub2)
 
 			elif bill=="charge_automatically":
-				sub2 = stripe.Subscription.create(
+				sub1 = stripe.Subscription.create(
 				customer=cust,
 				billing=bill,
 				#days_until_due=10,
 				items=[{'plan': 'home-delivery'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
+
+			else:
+				a='<h1><center>Billing Type is not applicable</center></h1>'
 
 		elif plan[i]=='silver-complete':
 			if bill=="send_invoice":
@@ -209,7 +223,7 @@ def multiple_subscribe():
 				items=[{'plan': 'silver-complete'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
 
 			elif bill=="charge_automatically":
 				sub1 = stripe.Subscription.create(
@@ -219,7 +233,9 @@ def multiple_subscribe():
 				items=[{'plan': 'silver-complete'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
+			else:
+				a='<h1><center>Billing Type is not applicable</center></h1>'
 
 
 		elif plan[i]=='Yearly complete':
@@ -231,7 +247,7 @@ def multiple_subscribe():
 				items=[{'plan': 'Yearly complete'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
 
 			elif bill=="charge_automatically":
 				sub1 = stripe.Subscription.create(
@@ -241,7 +257,9 @@ def multiple_subscribe():
 				items=[{'plan': 'Yearly complete'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
+			else:
+				a='<h1><center>Billing Type is not applicable</center></h1>'
 
 
 		elif plan[i]=='additional-license':
@@ -253,7 +271,7 @@ def multiple_subscribe():
 				items=[{'plan': 'additional-license'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
 
 			elif bill=="charge_automatically":
 				sub1 = stripe.Subscription.create(
@@ -263,11 +281,15 @@ def multiple_subscribe():
 				items=[{'plan': 'additional-license'}],
 				)
 				i=i+1
-				return '<h1><center>Plan is subscribed </center></h1>'
+				a=jsonify(sub1)
+			else:
+				a='<h1><center>Billing Type is not applicable</center></h1>'
 
 
 		else:
-			return render_template('error.html')
+			a='<h1><center>Invalid Plan</center></h1>'
+			#return render_template('error.html')
+		return a
 
 
 
@@ -291,10 +313,10 @@ def mulplans():
 				},
 				],
 				)
-		return '<h1><center>Plan is subscribed </center></h1>'
+		a=jsonify(sub1)
 				
-	else:
-		subscription = stripe.Subscription.create(
+	elif bill=="charge_automatically":
+		sub1=stripe.Subscription.create(
 			  customer=cust,
 			  items=[
 			    {
@@ -306,7 +328,10 @@ def mulplans():
 			    },
 			  ],
 			)
-		return '<h1><center>Plan is subscribed </center></h1>'
+		a=jsonify(sub1)
+	else:
+		a='<h1><center>Billing type is not available</center></h1>'
+	return a
 
 
 
