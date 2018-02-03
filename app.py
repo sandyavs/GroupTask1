@@ -14,20 +14,21 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
-'''@app.route('/')
+@app.route('/')
 def home():
 		return render_template('form.html')
 
 @app.route('/msub')
 def msub():
-		return render_template('multiple_subscribe.html')'''
+		return render_template('multiple_subscribe.html')
 
 
 
 @app.route('/list_customer')
 def list_customer():
 	lcus=stripe.Customer.list(limit=4)
-	return jsonify(lcus)
+	customer = stripe.Customer.retrieve("cus_CBSAMEZc3meHxt")
+	return jsonify(customer)
 	
 @app.route('/plan')
 def list_plan():
@@ -161,7 +162,8 @@ def subscribe():
 @app.route('/multiple_subscription',methods=['POST'])
 def multiple_subscribe():
 	cust=request.form['customer_id']
-	plan= request.form.getlist('plan_id')
+	planids=request.form['plan_id']
+	plan=planids.split(",")
 	print(plan)
 	bill=request.form['bill']
 	i=0
