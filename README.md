@@ -18,6 +18,8 @@
         1.sudo apt-get install virtualenv
     5. We are now ready to install Flask in this environment.To install flask following command can be used:
         1. pip install Flask
+    6.To configure flask code in cross origin request,follow the command specified below:
+          1.pip install -U flask-cors
         
   # <h3>Run Python Flask Files</h3>
       1.Running on windows Command Prompt:
