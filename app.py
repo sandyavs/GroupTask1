@@ -1,17 +1,17 @@
 import os
 from flask import Flask, render_template,request,jsonify,url_for
-from flask_cors import CORS
+#from flask_cors import CORS
 import stripe,json,requests
 from flask_json import FlaskJSON, JsonError, json_response
 app = Flask(__name__)
-CORS(app)
+#CORS(app)
 
 '''print(os.environ.get('PUB_API_KEY'))
 print(os.environ.get('SEC_API_KEY'))'''
 
 stripe_keys = {
-  'secret_key': os.environ['SEC_API_KEY'],
-  'publishable_key': os.environ['PUB_API_KEY']
+  'secret_key': os.environ['API_SECRET'],
+  'publishable_key': os.environ['API_PUBLISHABLE']
 }
 
 stripe.api_key = stripe_keys['secret_key']
@@ -22,15 +22,14 @@ def home():
 
 @app.route('/msub')
 def msub():
-		return render_template('multiple_subscribe.html')'''
-
+		return render_template('multiple_subscribe.html')
+'''
 
 
 @app.route('/')
 def list_customer():
 	lcus=stripe.Customer.list(limit=4)
-	customer = stripe.Customer.retrieve("cus_CBSAMEZc3meHxt")
-	return jsonify(customer)
+	return jsonify(lcus)
 	
 @app.route('/plan')
 def list_plan():
@@ -48,6 +47,25 @@ def customer_id():
 		total.append(d)
 		result=total
 	return jsonify(result)
+
+@app.route('/listsub')
+def list_subscrption():
+	lsub=stripe.Subscription.list(limit=5)
+	return jsonify(lsub)
+
+@app.route('/list_subid',methods=['POST'])
+def list_subid():
+	lsub=stripe.Subscription.list(limit=5)
+	total=[]
+	cust=request.form['customer_id']
+	for i in lsub:
+		d={}
+		if i['customer']==cust:
+			d['id']=i['id']
+			total.append(d)
+			result=total
+	return jsonify(result)
+
 '''
 @app.route('/subid',methods=['POST'])
 def subscription_id():
@@ -335,11 +353,23 @@ def mulplans():
 
 
 
+@app.route('/cancel_id',methods=['POST'])
+def cancel_sub():
+	subid=request.form['subscription_id']
+	sub = stripe.Subscription.retrieve(subid)
+	sub.delete()
+	return jsonify(sub)#In this json data status="cancelled"
 
-@app.route('/listsub')
-def list_subscrption():
-	lsub=stripe.Subscription.list(limit=3)
-	return jsonify(lsub)
+
+@app.route('/update_id',methods=['POST'])
+def update_sub():
+	subid=request.form['subscription_id']
+	tax=request.form['TAX']
+	sub=stripe.Subscription.retrieve(subid)
+	sub.tax_percent = tax	
+	sub.save()
+	return jsonify(sub)
+
 
 		
 
@@ -350,4 +380,4 @@ def list_subscrption():
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run( debug=True)
