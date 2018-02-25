@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template,request,jsonify,url_for
+from flask import Flask, render_template,request,jsonify,url_for,make_response
 #from flask_cors import CORS
 import stripe,json,requests
 from flask_json import FlaskJSON, JsonError, json_response
@@ -15,18 +15,18 @@ stripe_keys = {
 }
 
 stripe.api_key = stripe_keys['secret_key']
-'''
+
 @app.route('/')
 def home():
 		return render_template('form.html')
-
+'''
 @app.route('/msub')
 def msub():
 		return render_template('multiple_subscribe.html')
 '''
 
 
-@app.route('/')
+@app.route('/lcus')
 def list_customer():
 	lcus=stripe.Customer.list(limit=4)
 	return jsonify(lcus)
@@ -415,7 +415,13 @@ def check_pid():
 	  product=request.form['pid']
 	  for i in lprod:
 	  	if i['id']==product:
-	  		return jsonify(product)#the following html page should have attributes an input
+	  		#return jsonify(product)#the following html page should have attributes an input
+	  		print(product)
+	  		resp = make_response(render_template('readcookie.html'))
+	  		resp.set_cookie('Product',product)
+	  		return resp
+
+
 			
 @app.route('/delete_product')
 def delete_product():
@@ -428,7 +434,7 @@ def delete_product():
 @app.route('/create_sku',methods=['POST'])
 def create_sku():
 	sku1=stripe.SKU.create(
-	  product=prod,#product id which is entered in the function check_pid
+	  product=request.cookies.get('Product'),#product id which is entered in the function check_pid
 	  attributes={
 	    "size": request.form.get('size'),
 	    "gender": request.form.get('gender'),
