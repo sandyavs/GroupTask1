@@ -48,6 +48,7 @@ def customer_id():
 		result=total
 	return jsonify(result)
 
+
 @app.route('/listsub')
 def list_subscrption():
 	lsub=stripe.Subscription.list(limit=5)
@@ -370,12 +371,102 @@ def update_sub():
 	sub.save()
 	return jsonify(sub)
 
+'''
+@app.route('/create_product')
+def create_product():
+	  product = stripe.Product.create(
+	  name='Limited Edition T-Shirt',
+	  type='good',
+	  attributes=['size', 'gender', 'color'],
+	  description='Super awesome, one-of-a-kind t-shirt',
+	)
+	  return jsonify(product)'''
 
-		
+@app.route('/create_product',methods=['POST'])
+def create_product():
+	  product = stripe.Product.create(
+	  name=request.form['pname'],
+	  type='good',
+	  attributes=['size', 'gender', 'color'],
+	  description=request.form['text'],
+	 )
+	  #return render_template('error.html')
+	  return jsonify(product)
 
-		
-	
-	
+@app.route('/list_products')
+def list_product():
+	lprod=stripe.Product.list(limit=3)
+	return jsonify(lprod)
+
+@app.route('/retrieve_product')
+def retrieve_product():
+	lprod=stripe.Product.list(limit=3)
+	total=[]
+	for i in lprod:
+		d={}
+		d['id']=i['id']
+		total.append(d)
+		pid=total
+	return jsonify(pid)
+
+@app.route('/check_pid',methods=['POST'])
+def check_pid():
+	  lprod=stripe.Product.list(limit=3)
+	  product=request.form['pid']
+	  for i in lprod:
+	  	if i['id']==product:
+	  		return jsonify(product)#the following html page should have attributes an input
+			
+@app.route('/delete_product')
+def delete_product():
+	prod=request.form['pid']
+	product = stripe.Product.retrieve(prod)
+	product.delete()
+	return jsonify(product)
+
+
+@app.route('/create_sku',methods=['POST'])
+def create_sku():
+	sku1=stripe.SKU.create(
+	  product=prod,#product id which is entered in the function check_pid
+	  attributes={
+	    "size": request.form.get('size'),
+	    "gender": request.form.get('gender'),
+	    "color":request.form.get('color')
+	   	  },
+	  price=1500,
+	  currency="usd",
+	  inventory={
+	    "type": "finite",
+	    "quantity": 500
+	  }
+	)
+	return jsonify(sku1)
+
+@app.route('/list_sku')
+def list_sku():
+	lsku=stripe.SKU.list(limit=3)
+	return jsonify(lsku)
+
+@app.route('/retrieve_sku')
+def retrieve_sku():
+	lsku=stripe.SKU.list(limit=3)
+	total=[]
+	for i in lsku:
+		d={}
+		d['id']=i['id']
+		total.append(d)
+		psku=total
+	return jsonify(psku)
+
+			
+@app.route('/delete_sku',methods=['POST'])
+def delete_sku():
+	s=request.form['sku_id']
+	sku = stripe.SKU.retrieve(s)
+	sku.delete()
+	return jsonify(sku)
+
 
 
 
