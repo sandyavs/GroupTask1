@@ -454,16 +454,19 @@ def list_sku():
 	lsku=stripe.SKU.list(limit=3)
 	return jsonify(lsku)
 
-@app.route('/retrieve_sku')
+@app.route('/retrieve_sku',methods=['POST'])
 def retrieve_sku():
 	lsku=stripe.SKU.list(limit=3)
 	total=[]
+	pdt=request.form['pid']
+	print(pdt)
 	for i in lsku:
 		d={}
-		d['id']=i['id']
-		total.append(d)
-		psku=total
-	return jsonify(psku)
+		if i['product']==pdt:
+			d['id']=i['id']
+			total.append(d)
+			result=total
+	return jsonify(result)
 
 			
 @app.route('/delete_sku',methods=['POST'])
