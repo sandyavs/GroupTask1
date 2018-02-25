@@ -62,7 +62,7 @@
                     16.@app.route(/'delete_product')----->http://127.0.0.1:5000/delete_product(It will deleted the selected product id from the list)
                     17.@app.route(/'create_sku')----->http://127.0.0.1:5000/create_sku(As mentioned in point 12: for providing values for the attribute(size,gender,color) create_sku function willl perform that.It will get those values as user_input and after creation it will list the json data which contains sku_id)
                     18.@app.route(/'list_sku')----->http://127.0.0.1:5000/list_sku(IT will provide the detailed description of sku's created which is returned as json data).
-                    19.@app.route(/'retrieve_sku')----->http://127.0.0.1:5000/retrieve_sku(It will retrieve only the sku_id's from list_sku)
+                    19.@app.route(/'retrieve_sku')----->http://127.0.0.1:5000/retrieve_sku(It will retrieve only the sku_id's for the selected product from list_sku)
                     20.@app.route(/'delete_sku')----->http://127.0.0.1:5000/delete_sku(It wil delete the sku's)
                     
                         
