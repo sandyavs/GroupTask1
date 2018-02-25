@@ -52,6 +52,9 @@
                      6.@app.route('/subscribe')---->http://127.0.0.1:5000/subscribe(It will create the subscription  for each customer with only one plan)
                      7.@app.route('/multiple_subscription')---->http://127.0.0.1:5000/multiple_subscription(It will create the multiple subscription  for each customer with different plan per subscription)
                      8.@app.route('/multiple_plans')---->http://127.0.0.1:5000/multiple_plan(It will create the one subscription  for each customer with multiple plan)
+                     9.@app.route(/'list_subid')----->http://127.0.0.1:5000/list_subid(For the selected customer id this function will list the subscription id's)
+                     10.@app.route(/'cancel_id')----->http://127.0.0.1:5000/cancel_id(From the list of available subscription id's If the user selects the desired subscription id which he/she wants to cancel the plan,that subscription id will be cancelled for the selcted sub id from the selected customer). 
+                     11.@app.route(/'update_id')----->http://127.0.0.1:5000/update_id(If the user wants to make the updation for particualar subscription id from the available subscription id's they can make update using this function). 
 
                         
 
