@@ -55,6 +55,15 @@
                      9.@app.route(/'list_subid')----->http://127.0.0.1:5000/list_subid(For the selected customer id this function will list the subscription id's)
                      10.@app.route(/'cancel_id')----->http://127.0.0.1:5000/cancel_id(From the list of available subscription id's If the user selects the desired subscription id which he/she wants to cancel the plan,that subscription id will be cancelled for the selcted sub id from the selected customer). 
                      11.@app.route(/'update_id')----->http://127.0.0.1:5000/update_id(If the user wants to make the updation for particualar subscription id from the available subscription id's they can make update using this function). 
-
+                    12.@app.route(/'create_product')----->http://127.0.0.1:5000/create_product(Product name Eg:T-shirt will be provided as user input and this function will create the product with the attributes(size,color,gender))
+                    13.@app.route(/'list_product')----->http://127.0.0.1:5000/list_product(It will return the  list of products which is created as json data)
+                    14.@app.route(/'retrieve_product')----->http://127.0.0.1:5000/retrieve_product(From the list product function it will retrieve only the product id's).
+                    15.@app.route(/'check_pid')----->http://127.0.0.1:5000/check_pid(From the retrieved product id's it will check whether the selected product id is available in the list if it true it will return that product id as json data)
+                    16.@app.route(/'delete_product')----->http://127.0.0.1:5000/delete_product(It will deleted the selected product id from the list)
+                    17.@app.route(/'create_sku')----->http://127.0.0.1:5000/create_sku(As mentioned in point 12: for providing values for the attribute(size,gender,color) create_sku function willl perform that.It will get those values as user_input and after creation it will list the json data which contains sku_id)
+                    18.@app.route(/'list_sku')----->http://127.0.0.1:5000/list_sku(IT will provide the detailed description of sku's created which is returned as json data).
+                    19.@app.route(/'retrieve_sku')----->http://127.0.0.1:5000/retrieve_sku(It will retrieve only the sku_id's from list_sku)
+                    20.@app.route(/'delete_sku')----->http://127.0.0.1:5000/delete_sku(It wil delete the sku's)
+                    
                         
 
