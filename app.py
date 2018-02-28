@@ -56,12 +56,13 @@ def list_subscrption():
 
 @app.route('/list_subid',methods=['POST'])
 def list_subid():
-	lsub=stripe.Subscription.list(limit=5)
-	total=[]
 	cust=request.form['customer_id']
+	lsub=stripe.Subscription.list(limit=100)
+	total=[]
 	for i in lsub:
 		d={}
 		if i['customer']==cust:
+			print(i['id'])
 			d['id']=i['id']
 			total.append(d)
 			result=total
@@ -395,12 +396,12 @@ def create_product():
 
 @app.route('/list_products')
 def list_product():
-	lprod=stripe.Product.list(limit=3)
+	lprod=stripe.Product.list(limit=100)
 	return jsonify(lprod)
 
 @app.route('/retrieve_product')
 def retrieve_product():
-	lprod=stripe.Product.list(limit=3)
+	lprod=stripe.Product.list(limit=100)
 	total=[]
 	for i in lprod:
 		d={}
@@ -411,7 +412,7 @@ def retrieve_product():
 
 @app.route('/check_pid',methods=['POST'])
 def check_pid():
-	  lprod=stripe.Product.list(limit=3)
+	  lprod=stripe.Product.list(limit=100)
 	  product=request.form['pid']
 	  for i in lprod:
 	  	if i['id']==product:
